@@ -1,0 +1,44 @@
+version: "3"
+services:
+  php73:
+    container_name: php73
+    build:
+      context: .
+      dockerfile: php73/Dockerfile
+    volumes:
+      - ./www:/var/www
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    networks:
+      - kumadev
+
+  php81:
+    build:
+      context: .
+      dockerfile: php81/Dockerfile
+    container_name: php81
+    volumes:
+      - ./www:/var/www
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    networks:
+      - kumadev
+
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./www:/var/www
+      - ./nginx/logs:/var/log/nginx/
+      - ./nginx/conf:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    networks:
+      - kumadev
+
+networks:
+  kumadev:
+    external: true
